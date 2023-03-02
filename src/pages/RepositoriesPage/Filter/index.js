@@ -1,26 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Container, Selector, Cleaner } from './styles';
 
-function Filter() {
-  const langs = [
-    {
-      name: 'Javascript',
-      count: 5,
-      color: '#f1c40f',
-    },
-    {
-      name: 'PHP',
-      count: 4,
-      color: '#95a5a6',
-    },
-    {
-      name: 'Css',
-      count: 3,
-      color: '#3498db',
-    },
-  ];
+function Filter({ langs, currentLanguage, onClick }) {
   const selectors = langs.map(({ name, count, color }) => (
-    <Selector key={name.toLowerCase()} color={color}>
+    <Selector
+      key={name.toLowerCase()}
+      color={color}
+      className={currentLanguage === name ? 'selected' : ''}
+      onClick={() => onClick && onClick(name)}
+    >
       <span>{name}</span>
       <span>{count}</span>
     </Selector>
@@ -28,9 +17,24 @@ function Filter() {
   return (
     <Container>
       {selectors}
-      <Cleaner>Limpar</Cleaner>
+      <Cleaner onClick={() => onClick && onClick(undefined)}>Limpar</Cleaner>
     </Container>
   );
 }
+Filter.defaultProps = {
+  currentLanguage: null,
+  onClick: null,
+};
 
+Filter.propTypes = {
+  langs: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      count: PropTypes.number.isRequired,
+      color: PropTypes.string,
+    }).isRequired
+  ).isRequired,
+  currentLanguage: PropTypes.string,
+  onClick: PropTypes.func,
+};
 export default Filter;
